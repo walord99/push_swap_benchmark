@@ -1,18 +1,21 @@
 import random
 import subprocess
 import sys
-from multiprocessing import Process, Value, Array
+from multiprocessing import Process, Value, Array, Pool
 
 path = ''
+seed = -1
 
 def main():
 
-    if len(sys.argv) != 3:
+    if not (len(sys.argv) == 3 or len(sys.argv) == 4):
         print("arguments: path, iteration")
         sys.exit(1)
     try:
         globals()['path'] = sys.argv[1]
         iteration = int(sys.argv[2])
+        if len(sys.argv) == 4:
+            globals()['seed'] = int(sys.argv[3])
         print("%s" %(run_test(10, iteration)))
         print("%s" %(run_test(100, iteration)))
         print("%s" %(run_test(500, iteration)))
@@ -44,6 +47,8 @@ def run_test(list_size, iteration):
 
 def list_generator(size):
     list = []
+    if seed != -1:
+        random.seed(seed);
     for i in range(size):
         r = random.randint(0, 2147483647)
         if r not in list:
